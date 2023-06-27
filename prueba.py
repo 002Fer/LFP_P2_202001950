@@ -42,7 +42,7 @@ def separar():
     print(lista_aux)    
 
     
-buscar_archivo()
+
 
 def recursividad(numero):
     if numero==0:
@@ -50,4 +50,12 @@ def recursividad(numero):
     
     else:
         return numero*recursividad(numero-1)
+    
+a=2
 
+if a ==1:
+    print("nada")
+if a ==2:
+    print("nada")
+if a==3:
+    print("acertaste")
