@@ -59,3 +59,37 @@ if a ==2:
     print("nada")
 if a==3:
     print("acertaste")
+"""        aux2=0
+        indice2=0
+        no_terminal=""
+        terminal2=""
+        for elemento2 in lista_aux:
+            if elemento2==nombre_gram:
+                while aux2 < len(lista_aux):  #cambiar datos para que no se confunda
+                    elemento2=lista_aux[aux2]
+                    if elemento2==nombre_gram:
+                        indice2=0
+                    elif elemento2==0:
+                        no_terminal=elemento
+                        indice2+=1
+                    elif elemento2 ==1:
+                        terminal2=elemento
+
+                        tabla1.insert("", 'end',text = no_terminal, values=(terminal2))
+                        indice2=0
+                   # elif indice2==2:
+                    #    no_terminal=elemento
+                     #   indice+=1
+                      #  if indice2==2:
+                       #     terminal2=elemento
+                        #    indice2+=1
+                        #if no_terminal !="" and terminal2 !="":
+                         #   tabla1.insert("", 'end',text = no_terminal, values=(terminal2))
+                         #   indice2=0
+                    elif elemento2== "$":
+                        break
+                    aux2+=1
+            else:   
+                    aux2+=1
+
+        tabla1.place(x=50,y=245)"""

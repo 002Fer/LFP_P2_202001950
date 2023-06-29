@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from gramatica import Gramatica
 import tkinter.messagebox
 from tkinter.filedialog import askopenfilename
 from graphviz import Digraph
@@ -10,6 +11,7 @@ from reportlab.lib.pagesizes import A4
 tiempo=5
 lis_todo=[] #sirve al abrir el archivo
 lista_nombres=[]    #sirve para los nombres y tenerlos en el combobox
+
 lista_aux=[]        #tiene las producciones para luego llamarlas
 lis_todoPila=[] #almacena todo lo de la pila
 lista_nombresPila=[] #almacena los nombres de los automatas de pila
@@ -158,10 +160,16 @@ class Mi_ventan(Frame):
                 indice=0
         
             aux+=1
-        for elemento2 in nueva_lista:
-            lementos_separados = elemento2.replace("::=", ",").split(",")
-                
+        nueva_lista2=[]
+        for a in nueva_lista:
+            lementos_separados2 = a.replace(" ", "").split(",")  
+            nueva_lista2.extend(lementos_separados2)
+
+        for elemento2 in nueva_lista2:
+            
+            lementos_separados = elemento2.replace("::=", ",").split(",")  
             lista_aux.extend(lementos_separados)
+            lista_aux.append("#")
             
             
         print(lista_aux)  
@@ -226,60 +234,43 @@ class Mi_ventan(Frame):
 
         #------------------------Creo una tabla para las producciones------
         tabla1=ttk.Treeview(mostrar,columns="col1")
-        tabla1.column('#0', width=250)
-        tabla1.column('col1', width=250)
+        tabla1.column('#0', width=100)
+        tabla1.column('col1', width=100)
 
         tabla1.heading('#0',text="No terminales",anchor=CENTER)
         tabla1.heading('col1',text="Expresion",anchor=CENTER)
-        aux2=0
-        indice2=0
-        while aux2 < len(lista_aux):
-            elemento2=lista_aux[aux2]
-            if indice2==0:
-                nombre=elemento2
-                indice2+=1
+        
 
-            elif indice>3 and elemento !="%":
-                indice +=1
-            elif elemento== "%":
-                break
-       
-            aux+=1
     #----------------itero las producciones de la gramática y la muestro en la tabla------------
+        
         aux2=0
         indice2=0
-        no_terminal=""
-        terminal2=""
-        for elemento2 in lista_aux:
-            if elemento2==nombre_gram:
-                while aux2 < len(lista_aux):  #cambiar datos para que no se confunda
-                    elemento2=lista_aux[aux2]
-                    if elemento2==nombre_gram:
-                        indice2=0
-                    elif elemento2==0:
-                        no_terminal=elemento
-                        indice2+=1
-                    elif elemento2 ==1:
-                        terminal2=elemento
 
-                        tabla1.insert("", 'end',text = no_terminal, values=(terminal2))
+    #----------------itero los elementos de la gramática y la muestro en los Label ------------
+        for elemento2 in lista_aux:
+            if nombre_gram==elemento2:
+                aux2=aux2+2
+                while aux2 < len(lista_aux):
+                    elemento3=lista_aux[aux2]
+                    if indice2==0:
+                        no_terminal=elemento3
+                        indice2+=1
+                    elif indice2==1:
+                        terminal2=elemento3
+                        indice2+=1
+                    elif elemento3=="#":
+                        
+                        tabla1.insert("",END,text="{}>".format(no_terminal),values=(terminal2))
+                        
                         indice2=0
-                   # elif indice2==2:
-                    #    no_terminal=elemento
-                     #   indice+=1
-                      #  if indice2==2:
-                       #     terminal2=elemento
-                        #    indice2+=1
-                        #if no_terminal !="" and terminal2 !="":
-                         #   tabla1.insert("", 'end',text = no_terminal, values=(terminal2))
-                         #   indice2=0
-                    elif elemento2== "$":
+
+                    elif elemento3== "$":
                         break
                     aux2+=1
+                
             else:   
-                    aux2+=1
-
-        tabla1.place(x=50,y=245)
+                aux2+=1
+            tabla1.place(x=50,y=245)
 
     def buscar_archivo(self):
         try:
@@ -290,7 +281,7 @@ class Mi_ventan(Frame):
             
             for lineas in self.archivo:  
                 lis_todo.append(lineas)
-            print(lis_todo)
+            
             tkinter.messagebox.showinfo("Archivo","Se cargo el archivo")
         except:
             print('Error, no se ha seleccionado ningún archivo')
