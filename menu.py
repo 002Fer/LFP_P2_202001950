@@ -15,6 +15,8 @@ lista_nombres=[]    #sirve para los nombres y tenerlos en el combobox
 lista_aux=[]        #tiene las producciones para luego llamarlas
 lis_todoPila=[] #almacena todo lo de la pila
 lista_nombresPila=[] #almacena los nombres de los automatas de pila
+
+
 class Mi_ventan(Frame):
     
 
@@ -77,7 +79,7 @@ class Mi_ventan(Frame):
         automata.config(bg='#064663')
 
         self.combo_automata=ttk.Combobox(automata)
-        seleccionar=Button(automata,text="Seleccionar", bg="#0E8388", fg="white", font = ("Lemon Juice",14),command=self.generarPDF)
+        seleccionar=Button(automata,text="Seleccionar", bg="#0E8388", fg="white", font = ("Lemon Juice",14),command=self.transiciones_pila)
         boton_salir=Button(automata, text='Atras',bg="#ECB365", fg="white", font = ("Lemon Juice",14),command=automata.destroy)
 
         label_nombre=Label(automata,text="Autómata",bg="#064663", fg="white",font = ("Lemon Juice",14))
@@ -101,8 +103,127 @@ class Mi_ventan(Frame):
             aux+=1
         self.combo_automata["values"]=lista_nombresPila
         self.combo_automata.current(0)
-        
 
+    def transiciones_pila(self):
+        nombre_autom=self.combo_automata.get()
+        nueva_lista2=[]
+        lista_elementosPila=[]
+        aux2=0
+        indice2=0
+ 
+        self.nombrePila=""
+        self.alfabetoTodo=""
+        self.alfabetoPila=""
+        self.estadosPila=""
+        self.inicialPila=""
+        self.aceptacionPila=""
+        lista_estados=[]
+        lista_estados2=[]
+        lista_aceptacion=[]
+    #----------------itero los elementos de la gramática y la muestro en los Label ------------
+        for nombre in lis_todoPila:
+            if nombre==nombre_autom:
+                while aux2 < len(lis_todoPila):
+                    elemento3=lis_todoPila[aux2]
+                    if indice2==0:
+                        self.nombrePila=elemento3
+                        indice2+=1
+                    elif indice2==1:
+                        self.alfabetoTodo=elemento3
+                        indice2+=1
+                    elif indice2==2:
+                        self.alfabetoPila=elemento3
+                        indice2+=1
+                    elif indice2==3:
+                        self.estadosPila=elemento3
+                        lista_estados.append(self.estadosPila)
+                        indice2+=1
+                    elif indice2==4:
+                        self.inicialPila=elemento3
+                        indice2+=1
+                    elif indice2==5:
+                        self.aceptacionPila=elemento3
+                        lista_aceptacion.append(self.aceptacionPila)
+                        indice2+=1
+                    elif indice2>=6 and elemento3 !="%":
+                        nueva_lista2.append(elemento3)
+                        indice2+=1
+                    elif elemento3=="%":
+                        break
+                        indice2=0
+                    aux2+=1
+            else:   
+                aux2+=1
+        #----separa los elementos de las transiciones y las mete en una lista
+        for elementos in nueva_lista2:
+            pila_separada=elementos.replace(";", ",").split(",")
+             
+            lista_elementosPila.extend(pila_separada)
+            lista_elementosPila.append("&")
+        
+        for estados in lista_estados:
+            esstados=estados.split(",")
+            lista_estados2.extend(esstados)
+
+
+         #itero, meto los elementos en la clase, luego a la pila
+
+        
+        dot = Digraph('AFD', filename='AFDPrueba2', format='png')
+        dot.attr(rankdir='LR', size='8,5')
+        dot.attr('node', shape='doublecircle')
+        for i in lista_aceptacion:
+            dot.node(i)
+
+        dot.attr('node', shape='circle')
+        for j in lista_estados2:
+            dot.node(j)
+
+        
+        indice3=0
+        aux3=0
+        while aux3 <len(lista_elementosPila):
+            elemento_aux=lista_elementosPila[aux3]
+            if indice3==0:
+                origen=elemento_aux
+                indice3+=1
+            elif indice3==1:
+                lee=elemento_aux
+                indice3+=1
+            elif indice3==2:
+                extrae=elemento_aux
+                indice3+=1
+            elif indice3==3:
+                destino=elemento_aux
+                indice3+=1
+            elif indice3==4:
+                inserta=elemento_aux
+                indice3+=1
+            elif elemento_aux=="&":
+                dot.edge(origen, destino, label="{},{};{}".format(lee,extrae,inserta))
+                indice3=0
+            aux3+=1
+        dot.render('AFDPrueba2', view=False)
+ 
+        # print(lista_elementosPila)
+        w, h = A4
+        pdf = canvas.Canvas("ReporteAutómata.pdf", pagesize=A4)
+        pdf.setTitle("Reporte de Autómata")
+        text = pdf.beginText(50, h - 50)
+        text.setFont("Times-Roman", 20)
+
+        text.textLine("Nombre= "+self.nombrePila)                   
+        text.textLine("Alfabeto= {"+self.alfabetoTodo+"}")                    
+        text.textLine("Alfabeto de pila= {"+self.alfabetoPila+"}")                     
+        text.textLine("Estados= {"+self.estadosPila+"}")                   
+        text.textLine("Estado inicial= {"+self.inicialPila+"}")                      
+        text.textLine("Estado de aceptacion= {"+self.aceptacionPila+"}")          
+                       
+        text.textLine()
+        pdf.drawText(text)
+        pdf.drawInlineImage("AFDPrueba2.png", 100, 50, width=450, height=450, preserveAspectRatio=True)
+        pdf.save()
+        webbrowser.open_new_tab('ReporteAutómata.pdf')
 
     def ventana_Infogeneral(self):
         info=Toplevel()
@@ -370,56 +491,10 @@ class Mi_ventan(Frame):
         elif segundos==0:
             self.label.destroy()
             self.quit()
-    
-    def generarPDF(self):
-        w, h = A4
-        pdf = canvas.Canvas("ReporteAutómata.pdf", pagesize=A4)
-        pdf.setTitle("Reporte de Autómata")
-        text = pdf.beginText(50, h - 50)
-        text.setFont("Times-Roman", 20)
 
-        nombre_autom=self.combo_automata.get()
         
-        aux=0
-        indice=0
 
-    #----------------itero los elementos para el reporte ------------
-        for elemento in lis_todoPila:
-            if elemento==nombre_autom:
-                while aux < len(lis_todoPila):
-                    elemento=lis_todoPila[aux]
-                    if indice==0:
-                        text.textLine("Nombre= "+elemento)
-                        indice+=1
-                    elif indice==1:
-                        text.textLine("Alfabeto= {"+elemento+"}")
-                        indice+=1
-                    elif indice==2:
-                        text.textLine("Alfabeto de pila= {"+elemento+"}")
-                        indice+=1
-                    elif indice==3:
-                        text.textLine("Estados= {"+elemento+"}")
-                        indice+=1
-                    elif indice==4:
-                        text.textLine("Estado inicial= {"+elemento+"}")
-                        indice+=1
-                    elif indice==5:
-                        text.textLine("Estado de aceptacion= {"+elemento+"}")
-                        indice+=1
-                    elif indice>5 and elemento !="%":
-                        indice +=1
-                    elif elemento== "%":
-                        break
-                    aux+=1
-            else:   
-                    aux+=1
-        text.textLine()
-        pdf.drawText(text)
-        #pdf.drawInlineImage("AFDPrueba2.png", 100, 0, width=200, height=400, preserveAspectRatio=True)
-        
-        pdf.save()
-        webbrowser.open_new_tab('ReporteAutómata.pdf')
-                
+  
 
 root=Tk()
 app=Mi_ventan(root)

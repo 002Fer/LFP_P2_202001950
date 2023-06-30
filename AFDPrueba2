@@ -1,0 +1,17 @@
+digraph AFD {
+	rankdir=LR size="8,5"
+	node [shape=doublecircle]
+	F
+	node [shape=circle]
+	I
+	A
+	B
+	C
+	F
+	I -> A [label="$,$;#"]
+	A -> B [label="a,$;a"]
+	B -> B [label="a,$;a"]
+	B -> C [label="b,a;$"]
+	C -> C [label="b,a;$"]
+	C -> F [label="$,#;$"]
+}
