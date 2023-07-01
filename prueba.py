@@ -34,6 +34,7 @@ def separar():
             indice=0
        
         aux+=1
+
     for elemento2 in nueva_lista:
         lementos_separados = elemento2.replace("::=", ",").split(",")
             
@@ -51,14 +52,7 @@ def recursividad(numero):
     else:
         return numero*recursividad(numero-1)
     
-a=2
 
-if a ==1:
-    print("nada")
-if a ==2:
-    print("nada")
-if a==3:
-    print("acertaste")
 """        aux2=0
         indice2=0
         no_terminal=""

@@ -42,7 +42,7 @@ class Mi_ventan(Frame):
 
         Carga=Button(ventana2,text="Carga Archivo", bg="#0E8388", fg="white", font = ("Lemon Juice",14),command=self.buscar_archivo)
         informacion=Button(ventana2,text="Informacion General", bg="#ECB365", fg="black", font = ("Lemon Juice",14),command=self.ventana_Infogeneral)
-        arbol=Button(ventana2,text="Arbol de Derivación", bg="#0E8388", fg="white", font = ("Lemon Juice",14))
+        arbol=Button(ventana2,text="Arbol de Derivación", bg="#0E8388", fg="white", font = ("Lemon Juice",14), command=self.ventana_arbol)
         boton_salir=Button(ventana2, text='Salir',bg="#ECB365", fg="white", font = ("Lemon Juice",14),command=ventana2.destroy)
 
         Carga.place(x=150,y=50,width=200,height=40)
@@ -103,6 +103,7 @@ class Mi_ventan(Frame):
             aux+=1
         self.combo_automata["values"]=lista_nombresPila
         self.combo_automata.current(0)
+
 
     def transiciones_pila(self):
         nombre_autom=self.combo_automata.get()
@@ -256,31 +257,78 @@ class Mi_ventan(Frame):
             aux+=1
         self.combo["values"]=lista_nombres
         self.combo.current(0)
-        self.separar()
 
-#--------------separo las producciones para meterlos en una tabla
-    def separar(self):
+    def ventana_arbol(self):
+        arbol=Toplevel()
+        arbol.title("Generar Arbol")
+        arbol.geometry("500x250")
+        arbol.config(bg='#064663')
+
+        self.combo2=ttk.Combobox(arbol)
+        seleccionar=Button(arbol,text="Seleccionar", bg="#0E8388", fg="white", font = ("Lemon Juice",14),command=self.mostrar_info)
+        boton_salir=Button(arbol, text='Atras',bg="#ECB365", fg="white", font = ("Lemon Juice",14),command=arbol.destroy)
+
+        label_nombre=Label(arbol,text="Gramática",bg="#064663", fg="white",font = ("Lemon Juice",14))
+        label_nombre.place(x=50,y=50, width=100, height=30)
+        self.combo2.place(x=160,y=50, width=200, height=30)
+        seleccionar.place(x=150,y=150,width=200,height=40)
+        boton_salir.place(x=150,y=200,width=200,height=40)
+        
         aux=0
         indice=0
-        
-        nueva_lista=[]
         while aux < len(lis_todo):
             elemento=lis_todo[aux]
             if indice==0:
-                nueva_lista.append(elemento)
+                lista_nombres.append(elemento)
                 indice+=1
-
-            elif indice>0 and indice<4:
-                indice+=1
-            elif indice>=4 and elemento !="%":
-                nueva_lista.append(elemento)
-                
+            elif indice>0 and elemento !="%":
                 indice +=1
             elif elemento== "%":
-                nueva_lista.append("$")
                 indice=0
-        
+       
             aux+=1
+        self.combo2["values"]=lista_nombres
+        self.combo2.current(0)
+
+
+#---------------mostrar la informacion de las gramáticas en una tabla-------------
+    def mostrar_info(self):
+        nombre_gram=self.combo.get()
+        
+        aux=0
+        indice=0
+        nueva_lista=[]
+        self.nombre=""
+        self.nterminal=""
+        self.terminal=""
+        self.inicial=""
+
+    #----------------itero los elementos de la gramática y la muestro en los Label ------------
+        for elemento in lis_todo:
+            if elemento==nombre_gram:
+                while aux < len(lis_todo):
+                    element=lis_todo[aux]
+                    if indice==0:
+                        self.nombre=element
+                        indice+=1
+                    elif indice==1:
+                        self.nterminal=element
+                        indice+=1
+                    elif indice==2:
+                        self.terminal=element
+                        indice+=1
+                    elif indice==3:
+                        self.inicial=element
+                        indice+=1
+                    elif indice>3 and element !="%":
+                        nueva_lista.append(element)
+                        indice +=1
+                    elif element== "%":
+                        break
+                    aux+=1
+            else:   
+                aux+=1
+
         nueva_lista2=[]
         for a in nueva_lista:
             lementos_separados2 = a.replace(" ", "").split(",")  
@@ -290,58 +338,25 @@ class Mi_ventan(Frame):
             
             lementos_separados = elemento2.replace("::=", ",").split(",")  
             lista_aux.extend(lementos_separados)
-            lista_aux.append("#")
+            lista_aux.extend("#")
             
-            
-        print(lista_aux)  
+        print(lista_aux)
+         
+        self.mostrar=Toplevel()
+        self.mostrar.title("Informacion")
+        self.mostrar.geometry("600x500")
+        self.mostrar.config(bg='#064663')
 
-#---------------mostrar la informacion de las gramáticas en una tabla-------------
-    def mostrar_info(self):
-        nombre_gram=self.combo.get()
-        
-        aux=0
-        indice=0
+        boton_salir=Button(self.mostrar, text='Atras',bg="#ECB365", fg="white", font = ("Lemon Juice",11),command=self.limpiar_tabla)
 
-    #----------------itero los elementos de la gramática y la muestro en los Label ------------
-        for elemento in lis_todo:
-            if elemento==nombre_gram:
-                while aux < len(lis_todo):
-                    elemento=lis_todo[aux]
-                    if indice==0:
-                        nombre=elemento
-                        indice+=1
-                    elif indice==1:
-                        nterminal=elemento
-                        indice+=1
-                    elif indice==2:
-                        terminal=elemento
-                        indice+=1
-                    elif indice==3:
-                        inicial=elemento
-                        indice+=1
-                    elif indice>3 and elemento !="%":
-                        indice +=1
-                    elif elemento== "%":
-                        break
-                    aux+=1
-            else:   
-                    aux+=1
-
-        mostrar=Toplevel()
-        mostrar.title("Informacion")
-        mostrar.geometry("600x500")
-        mostrar.config(bg='#064663')
-
-        boton_salir=Button(mostrar, text='Atras',bg="#ECB365", fg="white", font = ("Lemon Juice",11),command=mostrar.destroy)
-
-        label_nombre=Label(mostrar,text="Nombre",bg="#064663", fg="white",font = ("Lemon Juice",11))
-        label_noTerminal=Label(mostrar,text="No Terminales",bg="#064663", fg="white",font = ("Lemon Juice",11))
-        label_terminal=Label(mostrar,text="Terminales",bg="#064663", fg="white",font = ("Lemon Juice",11))
-        label_inicial=Label(mostrar,text="No Terminal inicial",bg="#064663", fg="white",font = ("Lemon Juice",11))
-        label_nombre1=Label(mostrar,text=nombre,bg="#064663", fg="white",font = ("Lemon Juice",11))
-        label_noTerminal1=Label(mostrar,text=nterminal,bg="#064663", fg="white",font = ("Lemon Juice",11))
-        label_terminal1=Label(mostrar,text=terminal,bg="#064663", fg="white",font = ("Lemon Juice",11))
-        label_inicial1=Label(mostrar,text=inicial,bg="#064663", fg="white",font = ("Lemon Juice",11))
+        label_nombre=Label(self.mostrar,text="Nombre",bg="#064663", fg="white",font = ("Lemon Juice",11))
+        label_noTerminal=Label(self.mostrar,text="No Terminales",bg="#064663", fg="white",font = ("Lemon Juice",11))
+        label_terminal=Label(self.mostrar,text="Terminales",bg="#064663", fg="white",font = ("Lemon Juice",11))
+        label_inicial=Label(self.mostrar,text="No Terminal inicial",bg="#064663", fg="white",font = ("Lemon Juice",11))
+        label_nombre1=Label(self.mostrar,text=self.nombre,bg="#064663", fg="white",font = ("Lemon Juice",11))
+        label_noTerminal1=Label(self.mostrar,text=self.nterminal,bg="#064663", fg="white",font = ("Lemon Juice",11))
+        label_terminal1=Label(self.mostrar,text=self.terminal,bg="#064663", fg="white",font = ("Lemon Juice",11))
+        label_inicial1=Label(self.mostrar,text=self.inicial,bg="#064663", fg="white",font = ("Lemon Juice",11))
 
         label_nombre.place(x=50,y=50, width=150, height=30)
         label_noTerminal.place(x=50,y=90, width=150, height=30)
@@ -354,44 +369,42 @@ class Mi_ventan(Frame):
         boton_salir.place(x=380,y=210,width=100,height=40)
 
         #------------------------Creo una tabla para las producciones------
-        tabla1=ttk.Treeview(mostrar,columns="col1")
-        tabla1.column('#0', width=100)
-        tabla1.column('col1', width=100)
+        self.tabla1=ttk.Treeview(self.mostrar,columns="col1")
+        self.tabla1.column('#0', width=100)
+        self.tabla1.column('col1', width=100)
 
-        tabla1.heading('#0',text="No terminales",anchor=CENTER)
-        tabla1.heading('col1',text="Expresion",anchor=CENTER)
-        
+        self.tabla1.heading('#0',text="No terminales",anchor=CENTER)
+        self.tabla1.heading('col1',text="Expresion",anchor=CENTER)
 
-    #----------------itero las producciones de la gramática y la muestro en la tabla------------
-        
         aux2=0
         indice2=0
 
     #----------------itero los elementos de la gramática y la muestro en los Label ------------
-        for elemento2 in lista_aux:
-            if nombre_gram==elemento2:
-                aux2=aux2+2
-                while aux2 < len(lista_aux):
-                    elemento3=lista_aux[aux2]
-                    if indice2==0:
-                        no_terminal=elemento3
-                        indice2+=1
-                    elif indice2==1:
-                        terminal2=elemento3
-                        indice2+=1
-                    elif elemento3=="#":
-                        
-                        tabla1.insert("",END,text="{}>".format(no_terminal),values=(terminal2))
-                        
-                        indice2=0
 
-                    elif elemento3== "$":
-                        break
-                    aux2+=1
+        while aux2 < len(lista_aux):
+            elemento3=lista_aux[aux2]
+            if indice2==0:
+                no_terminal=elemento3
+                indice2+=1
+            elif indice2==1:
+                terminal2=elemento3
+                indice2+=1
+            elif elemento3=="#":
+                if no_terminal==lista_aux[aux2-1]:    
+                    self.tabla1.insert("",END,text="|".format(no_terminal),values=(terminal2))       
+                else:
+                    self.tabla1.insert("",END,text="{}>".format(no_terminal),values=(terminal2))
+                        
+                indice2=0
+            aux2+=1
                 
-            else:   
-                aux2+=1
-            tabla1.place(x=50,y=245)
+
+        self.tabla1.place(x=50,y=245)
+
+    def limpiar_tabla(self):
+    # Eliminar todos los elementos de la tabla
+        self.tabla1.delete(*self.tabla1.get_children())
+        self.mostrar.destroy()
 
     def buscar_archivo(self):
         try:
@@ -409,7 +422,7 @@ class Mi_ventan(Frame):
 
     def buscar_archivo2(self):
         try:
-            self.file = askopenfilename(title="Cargar un archivo", filetypes=[("Archivos", f'*.glc')])
+            self.file = askopenfilename(title="Cargar un archivo", filetypes=[("Archivos", f'*.ap')])
             self.text = self.file
             self.openfile = open(self.text, encoding="utf-8")
             self.archivo = self.openfile.read().split("\n")
@@ -491,10 +504,6 @@ class Mi_ventan(Frame):
         elif segundos==0:
             self.label.destroy()
             self.quit()
-
-        
-
-  
 
 root=Tk()
 app=Mi_ventan(root)
