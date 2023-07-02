@@ -1,6 +1,6 @@
 import os
 global lista 
-lista = ['noTerminal', 's', 'Expresion',"A",'noTerminal', 'A', 'Expresion',"aAa",'noTerminal', 'A', 'Expresion',"B"]
+lista = ["s","A","A","aAa","A","B","B","bBb","B","C"]
 
 
 global graph 
@@ -31,29 +31,28 @@ def grafo():
     operacion = ''
     extras2=''
 
+    aux=0
     
     while True:
         if i>len(lista)-1:
             break
         char = lista[i]
-        if char == 'noTerminal':
+        if char == 'Operacion':
             operacion = lista[i+1]
             nodo = f''' n{numeronodo}[label="{operacion}"]'''
             numeronodo+=1
 
-        if char == 'Expresion':
-            n1 = float(lista[i+1])
-            n1_1 = f''' n{numeronodo1}[label = "{n1}"] '''
-            numeronodo1+=1
-
-            if lista[i+1]=='noTerminal':
-                
+        if char == 'Valor1':
+            if lista[i+1]=='[':
+                i+=1
                 recursividad = grafo()
                 n1 = recursividad[3]
                 n1_1 = recursividad[0]
                 extras1 = f'''{recursividad[1]}\n{recursividad[2]}\n{recursividad[3]}\n{recursividad[4]}'''
-        
-                
+            else:
+                n1 = float(lista[i+1])
+                n1_1 = f''' n{numeronodo1}[label = "{n1}"] '''
+                numeronodo1+=1
 
 
 
