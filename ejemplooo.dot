@@ -1,0 +1,8 @@
+
+    graph{
+    
+            subgraph s0
+        { n100[label="Suma 9.82"] n100--n200  n100--n101  n200[label = "5.0"]  n101[label="Multiplicacion 6"] n101--n201 
+ n101--n300 
+ n201[label = "3.0"] 
+ n300[label = "2.0"] }}

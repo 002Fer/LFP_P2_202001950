@@ -7,7 +7,7 @@ digraph AFD {
 	A
 	B
 	C
-	"F "
+	F
 	I -> A [label="$,$;#"]
 	A -> B [label="a,$;a"]
 	B -> B [label="a,$;a"]

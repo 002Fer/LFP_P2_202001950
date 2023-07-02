@@ -8,7 +8,7 @@ import webbrowser
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4 
 
-tiempo=5
+tiempo=10
 lis_todo=[] #sirve al abrir el archivo
 lista_nombres=[]    #sirve para los nombres y tenerlos en el combobox
 
@@ -390,7 +390,8 @@ class Mi_ventan(Frame):
                 terminal2=elemento3
                 indice2+=1
             elif elemento3=="#":
-                if no_terminal==lista_aux[aux2-1]:    
+                if no_terminal==lista_aux[aux2-1]:
+                      
                     self.tabla1.insert("",END,text="|".format(no_terminal),values=(terminal2))       
                 else:
                     self.tabla1.insert("",END,text="{}>".format(no_terminal),values=(terminal2))
